@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h4>Obj to DDSCAT Converter</h4>
+    <p>
+      This tool
+      converts <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">Wavefront
+      .obj</a> files
+      to <a href="https://code.google.com/p/ddscat/">DDSCAT</a> shape
+      files.  To create .obj files, use a 3D mesh editor such
+      as <a href="http://www.blender.org/">Blender</a>
+      or <a href="http://www.wings3d.com/">Wings 3D</a> to create your
+      mesh.  Export the mesh as a .obj file.  Upload the mesh using
+      the menu above, and convert.  The DDSCAT shape file will be
+      available for download in the right pane.
+    </p>
+    <h4>Requirements</h4>
+    <ol>
+      <li>The mesh must be <b>triangular</b>.</li>
+      <li>
+        The mesh must be closed (ie. a sheet would not work, but a
+        rectangular prism would).
+      </li>
+      <li>Multiple, separate meshes each defining separate objects may be used in conjunction with the corresponding option.*</li>
+      <p>
+      * Files with multiple objects must have distinct vertices, faces, object names for each object to be recognized.</p>
+      <p>* Files will be set to recognize distinct object-meshes as seperate dielectric material compositions under this option.</p>
+      <p>* Files with overlapping points will allocate only 1 set of points and remove any extra sets. The default option automatically allocates points to the smallest object in the overlapping region. If inversion is used, this will allocate the points to the largest object.
+      </p>
+    </ol>
+
+  </body>
+</html>
