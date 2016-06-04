@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<run>
+	<about>
+	<label>5. Concentric Ellipsoids</label>
+                        <description>Two concentric ellipsoids. SHPAR1, SHPAR2, SHPAR3 specify the lengths along x, y, z axes of the outer ellipsoid; SHPAR4-6 specify the lengths along the x, y, z axes of the inner ellipsoid. The "core" within the inner ellipsoid is composed of isotropic material 1; the "mantle" between inner and outer ellipsoids is composed of isotropic material 2.</description>
+	</about>
+	
+    <tool>
+		<layout>wizard</layout>
+        <title>Discrete Dipole Approximation Code (DDSCAT).</title>
+        <about>Graphical simulation of DDSCAT 7.3, a freely available software package which applies the "discrete dipole approximation" (DDA) to calculate scattering and absorption of electromagnetic waves by an array of polarizable points. The code was developed by Bruce T. Draine and Piotr J. Flatau.</about>
+        <command>python @tool/ddscat.py @driver @tool/../..</command>
+     		<limits><cputime>518400</cputime></limits>
+    </tool>
+    <input>
+
+		<phase id="page1">
+        <group id="options">
+<group id="hide_CSHAPE">
+            <choice id="CSHAPE">
+                <current>3</current>	            
+            </choice>
+            </group>
+
+<group id="SHPARs">
+			<number id="SHPAR1">
+				<current>16</current>
+			</number>
+			<number id="SHPAR2">
+				<current>16</current>
+			</number>
+			<number id="SHPAR3">
+				<current>32</current>
+			</number>
+			<number id="SHPAR4">
+				<current>8</current>
+			</number>			
+			<number id="SHPAR5">
+				<current>8</current>
+			</number>		
+			<number id="SHPAR6">
+				<current>16</current>
+			</number>		
+</group>            
+            
+                        <group id="NCOMP_SET">
+            <integer id="NCOMP">
+            <current>1</current>
+            </integer>
+            </group>
+            
+                        <group id="dielectrics1to9">
+
+			<group id="truediel1">
+            <loader id="compload1">
+            <current>Gold (Au)</current>
+            </loader>
+            </group>
+            
+			<group id="truediel2">
+            <loader id="compload2">
+            <current>Gold (Au)</current>
+            </loader>
+            </group>
+            			<group id="truediel3">
+            <loader id="compload3">
+            <current>None</current>
+            </loader>
+                        </group>
+            			<group id="truediel4">
+            <loader id="compload4">
+            <current>None</current>
+            </loader>
+                        </group>
+            			<group id="truediel5">
+            <loader id="compload5">
+            <current>None</current>
+            </loader>
+                        </group>
+            			<group id="truediel6">
+            <loader id="compload6">
+            <current>None</current>
+            </loader>
+                        </group>
+            			<group id="truediel7">
+            <loader id="compload7">
+            <current>None</current>
+            </loader>
+                        </group>
+            			<group id="truediel8">
+            <loader id="compload8">
+            <current>None</current>
+            </loader>
+                        </group>
+            			<group id="truediel9">
+            <loader id="compload9">
+            <current>None</current>
+            </loader>
+            </group>
+            </group>
+            
+            </group>
+</phase>
+
+
+		<phase id="page3">
+			<choice id="PERIOD">
+				<current>0</current>
+			</choice>
+		</phase>
+
+            <group id="uploader">
+	        <about>
+		    <label>Shape of Nanosystem</label>
+	        </about>
+	        <loader>
+                    <about>
+	                <label>Select Shape File</label>
+                    </about>
+	            <upload>
+		        <to>input.phase(page1).group(options).group(uploader).string(UploadedFile)</to>
+		        <prompt>Select to Upload Shape File</prompt>
+	            </upload>
+	            <example>*shp.xml</example>
+                </loader>
+                
+	        <string id="UploadedFile">
+                    <about>
+                        <label>Uploaded File</label>
+                        <description>Set Uploaded File.</description>
+	                <enable>no</enable>
+                    </about>
+	            <size>5x5</size>
+                </string>
+            </group>
+
+
+    </input>
+</run>

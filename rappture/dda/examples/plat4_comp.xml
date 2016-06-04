@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<run>
+	<about>
+	<label>Platinum (Pt)</label>
+                      <description>Dielectric function for Platinum.</description>
+	</about>
+	
+    <tool>
+		<layout>wizard</layout>
+        <title>Discrete Dipole Approximation Code (DDSCAT).</title>
+        <about>Graphical simulation of DDSCAT 7.3, a freely available software package which applies the "discrete dipole approximation" (DDA) to calculate scattering and absorption of electromagnetic waves by an array of polarizable points. The code was developed by Bruce T. Draine and Piotr J. Flatau.</about>
+        <command>python @tool/ddscat.py @driver @tool/../..</command>
+     		<limits><cputime>518400</cputime></limits>
+    </tool>
+    <input>
+
+		<phase id="page1">
+        <group id="options">
+			 <group id="dielectrics1to9">
+				 <group id="truediel4">
+            <choice id="CDIEL4">
+                <current>Pt_diel.tab</current>	            
+            </choice>
+         </group>
+         </group>
+</group>
+</phase>
+
+
+
+	        <group id="dielectrics1to9">
+	        <about>
+		    <label></label>
+	        </about>
+				 <group id="truediel4">
+					<about><label></label>
+	                <enable>(input.phase(page1).group(options).group(NCOMP_SET).integer(NCOMP)=="4")||
+	                (input.phase(page1).group(options).group(NCOMP_SET).integer(NCOMP)=="5")||
+	                (input.phase(page1).group(options).group(NCOMP_SET).integer(NCOMP)=="6")||
+	                (input.phase(page1).group(options).group(NCOMP_SET).integer(NCOMP)=="7")||
+	                (input.phase(page1).group(options).group(NCOMP_SET).integer(NCOMP)=="8")||
+	                (input.phase(page1).group(options).group(NCOMP_SET).integer(NCOMP)=="9")</enable>
+					</about>
+		        <loader id="compload4">
+                    <about>
+	                <label>Composition 4</label>
+                    </about>
+	            <upload>
+		        <to>input.phase(page1).group(options).group(dielectrics1to9).group(truediel4).group(uploader5).string(UploadedFile5)</to>
+		        <prompt>Select to Upload Shape File</prompt>
+	            </upload>
+	            <example>*4_comp.xml</example>
+	            <default>None</default>
+                </loader>
+             <group id="uploader5">
+				 <about><enable>no</enable></about>
+	        <string id="UploadedFile5">
+                    <about>
+                        <label>Uploaded File</label>
+                        <description>Set Uploaded File.</description>
+	                <enable>no</enable>
+                    </about>
+	            <size>5x5</size>
+                </string>   
+                </group>    
+                </group>
+              </group>
+
+
+
+    </input>
+</run>
