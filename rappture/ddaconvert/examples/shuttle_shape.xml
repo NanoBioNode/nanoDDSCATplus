@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<run>
+    <about>
+        <label>Blender file</label>
+    </about>
+    <input>
+        <string id="input_file">
+            <about>
+                <enable>no</enable>
+            </about>
+            <current>USE_BLENDER_FILE</current>
+    </string>
+
+</input>
+</run>
