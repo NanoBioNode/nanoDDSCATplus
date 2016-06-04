@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/usr/bin/invoke_app "$@" -t ddaplus \
+    -w captive \
+    -u blender-2.70a \
+    -u ddscat-7.3.0_130527 \
+    -u rappture-dev \
+    -C @tool/bin/toolmenu
