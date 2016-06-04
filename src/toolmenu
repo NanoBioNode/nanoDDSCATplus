@@ -1,0 +1,145 @@
+#!/bin/sh
+#
+# ----------------------------------------------------------------------
+#\
+exec wish "$0" ${1+"$@"}
+# ----------------------------------------------------------------------
+# tclsh executes everything from here on...
+
+
+
+if {[catch {package require Tclx}]} {
+   proc kill {signal pid} {
+      set status [catch {exec kill -$signal $pid} killOut]
+   }
+}
+
+proc cleanup {} {
+   global blenderPID
+   global ddaconvertPID
+   global ddaPID
+   global filexferPID
+
+   if {$blenderPID != 0} {
+      kill 1 $blenderPID
+      set blenderPID 0
+   }
+   if {$ddaconvertPID != 0} {
+      kill 1 $ddaconvertPID
+      set ddaconvertPID 0
+   }
+   if {$ddaPID != 0} {
+      kill 1 $ddaPID
+      set ddaPID 0
+   }
+   if {$filexferPID != 0} {
+      kill 1 $filexferPID
+      set filexferPID 0
+   }
+}
+
+proc exitProgram {} {
+   set status [cleanup]
+   exit
+}
+
+proc blender_button {} {
+   global blenderPID
+   global installdir
+
+   if {$blenderPID != 0} {
+      kill 1 $blenderPID
+      set blenderPID 0
+   }
+   if {$blenderPID == 0} {
+      set status [catch {exec blender --python $installdir/rappture/blender/startup.py &} blenderPID]
+   }
+}
+
+proc ddaconvert_button {} {
+   global ddaconvertPID
+   global installdir
+
+   if {$ddaconvertPID != 0} {
+      kill 1 $ddaconvertPID
+      set ddaconvertPID 0
+   }
+   if {$ddaconvertPID == 0} {
+      set status [catch {exec rappture -tool $installdir/rappture/ddaconvert/tool.xml &} ddaconvertPID]
+   }
+}
+
+proc dda_button {} {
+   global ddaPID
+   global installdir
+
+   if {$ddaPID != 0} {
+      kill 1 $ddaPID
+      set ddaPID 0
+   }
+   if {$ddaPID == 0} {
+      set status [catch {exec rappture -tool $installdir/rappture/dda/tool.xml &} ddaPID]
+   }
+}
+
+proc filexfer_button {} {
+   global filexferPID
+   global installdir
+
+   if {$filexferPID != 0} {
+      kill 1 $filexferPID
+      set filexferPID 0
+   }
+   if {$filexferPID == 0} {
+      set status [catch {exec filexfer &} filexferPID]
+   }
+}
+
+
+wm protocol . WM_DELETE_WINDOW {
+   set status [cleanup]
+}
+
+
+wm title . {DDA+ Tools}
+
+package require Img
+
+set installdir [file dirname [file dirname [info script]]]
+set imgdir [file join $installdir doc images]
+
+set blenderPID 0
+set ddaconvertPID 0
+set ddaPID 0
+set filexferPID 0
+
+set image(blender) [image create photo -file $imgdir/blender-plain_140x39.png]
+set image(ddaconvert) [image create photo -file $imgdir/dda_convert_logo_3.png]
+set image(filexfer) [image create photo -file $imgdir/filexfer.png]
+set image(ddscat) [image create photo -file $imgdir/ddscat_logo.png]
+
+label .mesg1 -font "Arial 12 bold" \
+   -text "DDA+ Tools:"
+button .blender   -text "3D Shape Generation" \
+   -font "Arial 8 bold" \
+   -command "blender_button" -image $image(blender) -compound top \
+   -height 80 -width 150
+button .ddaconvert -text "DDA Convert: 3D to Dipoles" \
+   -font "Arial 8 bold" \
+   -command "ddaconvert_button" -image $image(ddaconvert) -compound top \
+   -height 80 -width 150
+button .dda -text "DDSCAT" \
+   -font "Arial 8 bold" \
+   -command "dda_button" -image $image(ddscat) -compound top \
+   -height 80 -width 150
+button .filexfer -text "Upload/Download Files" \
+   -font "Arial 8 bold" \
+   -command "filexfer_button" -image $image(filexfer) -compound top \
+   -height 80 -width 150
+   
+
+grid .mesg1 -column 0 -row 0 -columnspan 3 -sticky nsew -pady 4
+grid .blender -column 0 -row 1
+grid .ddaconvert -column 0 -row 2
+grid .dda -column 0 -row 3
+grid .filexfer -column 0 -row 4
