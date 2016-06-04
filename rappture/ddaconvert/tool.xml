@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<run>
+    <tool>
+		<layout>wizard</layout>
+        <title>DDSCAT Shape File Converter</title>
+        <about>Convert .obj files to DDSCAT7 shape files.</about>
+        <command>python @tool/ddaconvert.py @driver @tool/../..</command>
+         		<limits><cputime>518400</cputime></limits>
+        <action><label>Convert</label></action>
+
+    </tool>
+    <input>
+        <loader>
+            <about>
+                <label>Choose .obj file</label>
+            </about>
+            <upload>
+                <to>input.string(input_file)</to>
+                <prompt>Upload .obj file.</prompt>
+            </upload>
+            <example>*.xml</example>
+        </loader>
+        <boolean id="load_choice">
+			<about>
+				<label>Send this Shape to "DDSCAT Main"?</label>
+				<description>This option sets the preference of which file to dedicate to DDSCAT Main</description>
+			</about>
+			<default>yes</default>
+        </boolean>
+
+        <number id="nmblender">
+            <about>
+                <label>Nanometers per Blender Unit</label>
+                <description>Set the real scale of the system: convert Blender Units to Nanometers</description>
+                <enable>(input.choice(pop_choice) == "5")</enable>
+            </about>
+            <default>1.0</default>
+            <min>0.001</min>
+        </number>  
+        
+        <choice id="pop_choice">
+			<about><label>Choose how to populate the shape with Dipoles</label>
+				<description>
+				</description>
+			
+			</about>
+
+				<option>
+				<about><label>Dipoles per Nanometer</label>
+				<description></description>
+				</about>
+				<value>1</value>
+				</option>
+
+				<option>
+				<about><label>Dipoles along Max Cartesian Dimension</label>
+				<description></description>
+				</about>
+				<value>2</value>
+				</option>			
+
+				<option>
+				<about><label>Total Dipole Volume</label>
+				<description></description>
+				</about>
+				<value>3</value>
+				</option>			
+				
+				<default>1</default>
+        </choice>      
+        <group id="res_group">
+			<about><enable>(input.choice(pop_choice) == "1")</enable></about>
+        <choice id="res_choice">
+			<about>
+				<label>.                 Resolution Level (Dipoles per Nanometer)</label>
+				<description>
+				</description>			
+			</about>
+
+				<option>
+				<about><label>Low (1)</label>
+				<description></description>
+				</about>
+				<value>Low(1)</value>
+				</option>
+
+				<option>
+				<about><label>Medium (2)</label>
+				<description></description>
+				</about>
+				<value>Medium(2)</value>
+				</option>			
+
+				<option>
+				<about><label>High (3)</label>
+				<description></description>
+				</about>
+				<value>High(3)</value>
+				</option>			
+				
+				<option>
+				<about><label>Custom Value</label>
+				<description></description>
+				</about>
+				<value>CustomValue</value>
+				</option>				
+				<default>Medium(2)</default>
+        </choice>
+        </group>
+
+<group id="dipCar_group">
+	<about><enable>(input.choice(pop_choice) == "2")</enable></about>
+        <integer id="dipCar">
+            <about>
+                <label>..                  Dipole Length of Longest Cartesian Axis</label>
+                <description>This sets the value along the longest direction in X,Y, or Z. Whichever is the longest within the shape file is selected.</description>
+            </about>
+            <default>50</default>
+            <min>1</min>
+        </integer>  
+</group>
+
+<group id="dipvol_group">
+	<about><enable>(input.choice(pop_choice) == "3")</enable></about>
+        <integer id="dipvol">
+            <about>
+                <label>.                                                 Total Dipole Count</label>
+                <description>The number of dipoles that will be stuffed into the given geometry.</description>
+            </about>
+            <default>100000.0</default>
+            <min>1</min>
+        </integer>  
+</group>
+
+
+        <group id="max_dip">
+			<about><enable>((input.group(res_group).choice(res_choice) == "CustomValue") &amp;&amp; (input.choice(pop_choice) == "1") )</enable></about>
+			<integer id="max_dipoles">
+				<about>
+					<label>..                              Dipoles per Nanometer</label>
+					<description></description>
+				</about>
+				<default>50</default>
+			</integer>
+        </group>
+<!--		<number id="dp2nm">
+			<about>
+				<label></label>
+				<description>Defines the measured distance between any directly adjacent dipole positions.</description>
+			</about>
+			<default>1</default>
+			<min>0.1</min>
+		</number> -->
+		
+        <boolean id="dx_choice">
+            <about>
+                <label>Create Data Explorer (.dx) file of Shape?</label>
+                <description>Caution: Choosing to generate this filetype will take additional time and delay the end of the simulation.</description>
+            </about>
+            <default>no</default>
+        </boolean>        
+<group id="dxscale">
+	<about><enable>(input.boolean(dx_choice) == "yes")</enable></about>
+        <number id="dxscaleval">
+            <about>
+                <label>.                                                Å Between Dipoles</label>
+                <description>Make value closer to 0 to "shrink" shape scale. Increase value to "enlarge" shape scale.</description>
+            </about>
+            <default>1.0</default>
+            <min>0.00000000000000000001</min>
+        </number>  
+</group>
+        <boolean id="display_choice">
+            <about>
+                <label>Display 3D Output of Converted Shape file?</label>
+                <description>Caution: Choosing to render the 3D image will take additional time and delay the end of the simulation.</description>
+            </about>
+            <default>no</default>
+        </boolean>        
+
+        <boolean id="separate_choice">
+            <about>
+                <label>Seperate Dielectrics for Different Shapes found in file?</label>
+                <description>Each shape denoted with a 'o ' in the Wavefront Object file will receive a different dielectric parameter, distinguishing them from each other.</description>
+            </about>
+            <default>no</default>
+        </boolean>  
+        
+<group id="inverted">
+	<about><enable>(input.boolean(separate_choice) == "yes")</enable></about>
+        <boolean id="invert_choice">
+            <about>
+                <label>Use Inverted Point Allocation for Overlapping Shapes?</label>
+                <description>By default, overlapping shapes will attribute the points contained in multiple shapes to the smallest shape. If inversion is used, the points are attributed to the largest shape.</description>
+            </about>
+            <default>no</default>
+        </boolean>  
+</group>        
+
+            <choice id="RUNSTATE">
+                <about>
+                    <label>Execution Type</label>
+                    <description>Choose whether to run DDAConvert in its local version instantly. Or remotely with more resources a potential queue wait-time.</description>
+                    <enable>no</enable>
+                </about>
+                <option id="1">
+                    <about>
+                        <label>Virtual-Local DDAConvert (12 Hour Limit)</label>
+                        <description>Run DDAConvert on the local node. Not recommended for long jobs.</description>
+                    </about>
+                    <value>1</value>
+                </option>
+                <option id="3">
+                    <about>
+                        <label>Remote Submission for Large-Scale DDAConvert</label>
+                        <description>Run DDAConvert remotely.
+                         Designed for use with extremely large conversions that will fail to complete locally. For smaller jobs, wait times in the remote queue may dominate.
+                        </description>
+                    </about>
+                    <value>3</value>
+                </option>
+                <default>1</default>
+            </choice>
+
+        <note>
+            <contents>file://doc.html</contents>
+        </note>
+
+        <string id="input_file">
+            <about>
+                <enable>no</enable>
+            </about>
+        </string>
+    </input>
+    <output>
+        <string id="output_file">
+            <about>
+                <label>DDSCAT7 Shape File</label>
+            </about>
+        </string>
+              
+       
+        
+    </output>
+</run>
